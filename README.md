@@ -31,6 +31,9 @@ src/
     brand/                 Düdestrap wordmarks and app icon (from the customer app's brand kit)
     hero/                  hero backdrops and cloud textures
     sections/              lane card images
+  content/
+    site.js                site URL, title, description and share image (single source for SEO)
+    faq.js                 FAQ copy, shown on the page and published as structured data
   components/
     ui/                    shadcn-style primitives
     sections/              page sections: showcase, lanes, process, trust, pricing,
@@ -54,6 +57,8 @@ src/
   index.css
   main.jsx
 ```
+
+`vite/seo-plugin.js` writes the page title, meta description, canonical URL, Open Graph and Twitter cards, JSON-LD structured data (Organization, WebSite, FAQPage), `robots.txt`, `sitemap.xml` and `site.webmanifest` from `src/content/` at build time. If the primary domain changes, update `site.url` in `src/content/site.js`.
 
 `assets/` at the repository root holds the original hero reference artwork used to produce the backdrops; the page does not load it.
 
