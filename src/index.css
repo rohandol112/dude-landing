@@ -139,7 +139,6 @@ main {
   container-type: inline-size;
 }
 
-.nav-shell,
 .hero {
   --u: calc(min(100cqw, max(1920px, 145.25svh)) / 1024);
   --m: calc(100cqw / 390);
@@ -179,73 +178,120 @@ button:focus-visible {
   outline-offset: -2px;
 }
 
-/* Navigation — compact first */
+/* Navigation — Craft-style floating bar. Compact first: wordmark, CTA, menu icon. */
 .site-header {
   position: fixed;
   z-index: 50;
   inset: 0 0 auto;
-  container-type: inline-size;
   pointer-events: none;
 }
 
 .nav-shell {
   position: absolute;
   top: 12px;
-  right: 12px;
-  left: 12px;
+  left: 50%;
   display: flex;
+  width: min(calc(100% - 24px), 720px);
   height: 56px;
   align-items: center;
   justify-content: space-between;
-  padding: 0 6px 0 5px;
-  border: 3px solid rgba(255, 255, 255, 0.86);
+  gap: 12px;
+  padding: 0 8px 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 999px;
-  background: rgba(242, 248, 252, 0.86);
-  box-shadow: 0 10px 26px rgba(32, 62, 88, 0.13);
-  backdrop-filter: blur(14px) saturate(1.15);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(228, 241, 250, 0.74));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(20, 40, 60, 0.06),
+    0 10px 28px rgba(30, 60, 90, 0.12);
+  translate: -50% 0;
+  backdrop-filter: blur(16px) saturate(1.4);
   pointer-events: auto;
-  transition: background-color 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  transition: background 300ms ease, box-shadow 300ms ease;
 }
 
 .site-header[data-scrolled] .nav-shell {
-  border-color: rgba(255, 255, 255, 0.95);
-  background: rgba(248, 251, 253, 0.94);
-  box-shadow: 0 14px 34px rgba(22, 38, 52, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(240, 247, 252, 0.9));
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 1px 2px rgba(20, 40, 60, 0.06),
+    0 14px 36px rgba(22, 38, 52, 0.16);
 }
 
-.brand-pill {
+.nav-brand {
   display: inline-flex;
-  width: 136px;
-  height: 42px;
   flex: 0 0 auto;
   align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  color: var(--ink);
-  background: linear-gradient(180deg, #ffe12e, var(--brand-yellow));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  padding: 6px 0;
+  border-radius: 8px;
 }
 
-.brand-wordmark {
+.nav-wordmark {
   width: 104px;
 }
 
 .desktop-nav,
-.desktop-actions {
+.nav-text-link {
   display: none;
 }
 
+@media (max-width: 380px) {
+  .nav-shell {
+    gap: 6px;
+    padding-left: 14px;
+  }
+
+  .nav-wordmark {
+    width: 90px;
+  }
+
+  .nav-cta {
+    height: 38px;
+    padding-inline: 14px;
+    font-size: 13.5px;
+  }
+
+  .menu-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.nav-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-cta {
+  height: 40px;
+  padding-inline: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .menu-button {
-  display: inline-flex;
-  width: 42px;
-  height: 42px;
-  color: white;
-  background: var(--ink);
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+
+.menu-button svg {
+  width: 22px;
+  height: 22px;
 }
 
 .menu-button:hover {
-  color: white;
-  background: #252525;
+  background: rgba(10, 11, 12, 0.06);
 }
 
 .mobile-menu {
@@ -308,15 +354,6 @@ button:focus-visible {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.mobile-actions {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  margin-top: 10px;
-  padding-top: 11px;
-  border-top: 1px solid rgba(13, 17, 20, 0.08);
 }
 
 /* Hero — compact composition (phones and portrait tablets) */
@@ -1039,32 +1076,6 @@ button:focus-visible {
 
 /* Hero — desktop composition: every position is a pixel of the reference artwork */
 @media (min-width: 660px) and (min-aspect-ratio: 5/4) {
-  .nav-shell {
-    top: calc(22 * var(--u));
-    right: auto;
-    left: 50%;
-    width: calc(830 * var(--u));
-    height: max(46px, calc(49 * var(--u)));
-    padding: 0 calc(3.5 * var(--u)) 0 calc(1.5 * var(--u));
-    border-width: calc(3.5 * var(--u));
-    box-shadow: 0 calc(9 * var(--u)) calc(24 * var(--u)) rgba(32, 62, 88, 0.12);
-    translate: -50% 0;
-  }
-
-  .brand-pill {
-    width: max(122px, calc(140 * var(--u)));
-    height: max(34px, calc(37 * var(--u)));
-  }
-
-  .brand-wordmark {
-    width: max(92px, calc(104 * var(--u)));
-  }
-
-  .menu-button {
-    width: max(36px, calc(35 * var(--u)));
-    height: max(36px, calc(35 * var(--u)));
-  }
-
   .hero {
     background: linear-gradient(180deg, #cde5f6, #d7e9f4 calc(300 * var(--u)), #eef2f3 calc(440 * var(--u)), var(--paper) calc(600 * var(--u)));
   }
@@ -1197,63 +1208,58 @@ button:focus-visible {
 }
 
 @media (min-width: 1024px) and (min-aspect-ratio: 5/4) {
+  .nav-shell {
+    top: 20px;
+    display: grid;
+    width: min(calc(100% - 48px), 940px);
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    padding: 0 8px 0 22px;
+  }
+
+  .nav-brand {
+    justify-self: start;
+  }
+
   .desktop-nav {
     display: flex;
-    min-width: 0;
     align-items: center;
-    gap: calc(16 * var(--u));
-    margin-left: calc(20 * var(--u));
   }
 
-  .nav-link {
+  .nav-link,
+  .nav-text-link {
     display: inline-flex;
     align-items: center;
-    gap: calc(3 * var(--u));
+    gap: 3px;
+    padding: 8px 9px;
+    border: 0;
+    border-radius: 999px;
     color: #17191b;
-    font-size: max(10.5px, calc(10.2 * var(--u)));
-    font-weight: 500;
+    background-color: transparent;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 450;
     line-height: 1;
     white-space: nowrap;
-    transition: color 160ms ease;
-  }
-
-  .nav-link svg {
-    width: calc(11 * var(--u));
-    height: calc(11 * var(--u));
-    stroke-width: 2.2;
-  }
-
-  .nav-link {
-    position: relative;
-  }
-
-  .nav-link {
-    margin-inline: calc(-8 * var(--u));
-    padding: calc(7 * var(--u)) calc(8 * var(--u));
-    border-radius: 999px;
+    cursor: pointer;
     transition: background-color 180ms ease, color 180ms ease;
   }
 
   .nav-link:hover,
-  .nav-link[aria-expanded="true"] {
-    background: rgba(10, 11, 12, 0.05);
+  .nav-link[aria-expanded="true"],
+  .nav-text-link:hover {
+    background-color: rgba(10, 11, 12, 0.05);
   }
 
-  button.nav-link {
-    border: 0;
-    background-color: transparent;
-    font: inherit;
-    font-size: max(10.5px, calc(10.2 * var(--u)));
-    font-weight: 500;
-    cursor: pointer;
+  .nav-link svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2;
+    transition: transform 200ms ease;
   }
 
   .nav-link svg[data-open] {
     transform: rotate(180deg);
-  }
-
-  .nav-link svg {
-    transition: transform 200ms ease;
   }
 
   .nav-menu {
@@ -1264,16 +1270,17 @@ button:focus-visible {
   .nav-dropdown {
     position: absolute;
     z-index: 60;
-    top: calc(100% + 20px);
+    top: calc(100% + 18px);
     left: 50%;
     display: grid;
-    width: 272px;
+    width: 280px;
     gap: 2px;
     padding: 8px;
-    border: 1px solid rgba(10, 11, 12, 0.06);
-    border-radius: 18px;
+    border-radius: 20px;
     background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 24px 60px rgba(22, 34, 42, 0.18);
+    box-shadow:
+      0 0 0 1px rgba(10, 11, 12, 0.06),
+      0 24px 60px rgba(22, 34, 42, 0.18);
     translate: -50% 0;
     backdrop-filter: blur(18px);
   }
@@ -1284,22 +1291,22 @@ button:focus-visible {
     right: 0;
     bottom: 100%;
     left: 0;
-    height: 22px;
+    height: 20px;
     content: "";
   }
 
   .nav-dropdown a {
     display: grid;
-    gap: 2px;
+    gap: 3px;
     padding: 10px 12px;
-    border-radius: 12px;
+    border-radius: 13px;
     transition: background-color 160ms ease;
   }
 
   .nav-dropdown a:hover,
   .nav-dropdown a:focus-visible {
     outline: none;
-    background: #fff4bf;
+    background: #fff6c7;
   }
 
   .nav-dropdown-title {
@@ -1315,44 +1322,15 @@ button:focus-visible {
     line-height: 1.35;
   }
 
-  .desktop-actions {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: calc(7 * var(--u));
-    margin-left: auto;
+  .nav-actions {
+    justify-self: end;
+    gap: 6px;
   }
 
-  .desktop-actions .get-started-button {
-    height: calc(35 * var(--u));
-    font-size: max(10.5px, calc(10.2 * var(--u)));
-    font-weight: 500;
-  }
-
-  .desktop-actions .get-started-button {
-    min-width: calc(118 * var(--u));
-    justify-content: space-between;
-    gap: calc(14 * var(--u));
-    padding: 0 calc(18 * var(--u)) 0 calc(17 * var(--u));
-    color: white;
-    background: #070707;
-  }
-
-  .desktop-actions .get-started-button svg {
-    width: calc(15 * var(--u));
-    height: calc(15 * var(--u));
-  }
-
-  .desktop-actions .get-started-button:hover {
-    background: #262626;
-  }
-
-  .desktop-actions .get-started-button svg {
-    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .desktop-actions .get-started-button:hover svg {
-    transform: translateX(calc(3 * var(--u)));
+  .nav-cta {
+    height: 40px;
+    padding-inline: 18px;
+    font-size: 15px;
   }
 
   .menu-button,

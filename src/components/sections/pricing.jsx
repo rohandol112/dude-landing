@@ -53,7 +53,7 @@ export function Pricing() {
             key={plan.name}
             variants={revealUp}
             className={cn(
-              "card-hover relative flex flex-col gap-6 p-8",
+              "card-hover relative flex min-w-0 flex-col gap-6 p-6 sm:p-8",
               plan.featured
                 ? "rounded-[28px] bg-ink text-white shadow-[0_30px_70px_rgba(10,11,12,0.28)]"
                 : "card-surface text-ink",
@@ -76,7 +76,7 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <Button asChild variant={plan.featured ? "brand" : "light"} size="lg" className="group mt-auto justify-between">
+            <Button asChild variant={plan.featured ? "brand" : "light"} size="lg" className="group mt-auto h-auto min-h-12 justify-between py-3 text-left whitespace-normal">
               <a href={appHref}>
                 {plan.cta}
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />

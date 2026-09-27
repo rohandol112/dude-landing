@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, Smartphone, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ const navigation = [
   { label: "Business", href: "#business" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Vendors", href: "#vendors" },
 ];
 
 const resources = [
@@ -115,13 +114,8 @@ export function SiteHeader() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        <a
-          className="brand-pill"
-          href="#top"
-          aria-label="Dudestrap home"
-          onClick={closeMenu}
-        >
-          <Wordmark className="brand-wordmark" decorative />
+        <a className="nav-brand" href="#top" aria-label="Düdestrap home" onClick={closeMenu}>
+          <Wordmark tone="gold" className="nav-wordmark" decorative />
         </a>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
@@ -133,36 +127,28 @@ export function SiteHeader() {
           <ResourcesMenu />
         </nav>
 
-        <div className="desktop-actions">
-          <Button size="sm" asChild className="get-started-button">
-            <a href={appHref}>
-              Get the app
-              <Smartphone aria-hidden="true" />
-            </a>
+        <div className="nav-actions">
+          <a href="#vendors" className="nav-text-link">
+            For vendors
+          </a>
+          <Button asChild variant="ink" className="nav-cta">
+            <a href={appHref}>Get the app</a>
           </Button>
+          <button
+            type="button"
+            className="menu-button"
+            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+          </button>
         </div>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="menu-button"
-          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-navigation"
-          onClick={toggleMenu}
-        >
-          {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-        </Button>
-
-        <div
-          id="mobile-navigation"
-          className="mobile-menu"
-          data-open={isMenuOpen}
-          aria-hidden={!isMenuOpen}
-        >
+        <div id="mobile-navigation" className="mobile-menu" data-open={isMenuOpen} aria-hidden={!isMenuOpen}>
           <nav aria-label="Mobile navigation">
-            {navigation.map((item) => (
+            {[...navigation, { label: "For vendors", href: "#vendors" }].map((item) => (
               <a key={item.label} href={item.href} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
                 {item.label}
               </a>
@@ -174,14 +160,6 @@ export function SiteHeader() {
               </a>
             ))}
           </nav>
-          <div className="mobile-actions">
-            <Button asChild variant="ink" size="lg">
-              <a href={appHref} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
-                Get the app
-                <Smartphone aria-hidden="true" />
-              </a>
-            </Button>
-          </div>
         </div>
       </motion.div>
     </header>

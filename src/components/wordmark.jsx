@@ -1,10 +1,12 @@
 import { cn } from "@/lib/utils";
 
 import wordmarkBlack from "@/assets/brand/wordmark-black.png";
+import wordmarkGold from "@/assets/brand/wordmark-gold.png";
 import wordmarkWhite from "@/assets/brand/wordmark-white.png";
 import wordmarkYellow from "@/assets/brand/wordmark-yellow.png";
 
-const sources = { black: wordmarkBlack, white: wordmarkWhite, yellow: wordmarkYellow };
+// gold (#EDB600) is the deeper brand yellow for light backgrounds, where #FED900 washes out
+const sources = { black: wordmarkBlack, gold: wordmarkGold, white: wordmarkWhite, yellow: wordmarkYellow };
 
 /** The Düdestrap wordmark from the app's brand kit (960 × 218, transparent). */
 export function Wordmark({ tone = "black", className, decorative = false }) {
