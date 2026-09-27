@@ -1,9 +1,10 @@
 /**
  * Writes the page's search and sharing metadata from src/content/site.js at build time:
  * <head> tags (title, description, canonical, Open Graph, Twitter), JSON-LD structured
- * data (Organization, WebSite, FAQPage), plus robots.txt, sitemap.xml and site.webmanifest.
+ * data (Organization, WebSite, WebPage, FAQPage), plus robots.txt, sitemap.xml and site.webmanifest.
  */
 import { faqs } from "../src/content/faq.js";
+import { services } from "../src/content/services.js";
 import { site } from "../src/content/site.js";
 
 const absolute = (pathname) => new URL(pathname, site.url).href;
@@ -22,6 +23,18 @@ function structuredData() {
     slogan: site.tagline,
     description: site.description,
     logo: { "@type": "ImageObject", url: absolute("/icon-512.png"), width: 512, height: 512 },
+    image: absolute(site.ogImage.path),
+    areaServed: { "@type": "Country", name: site.areaServed },
+    knowsAbout: services.map((service) => service.label),
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${site.name} services`,
+      itemListElement: services.map((service) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: service.label, description: service.description, areaServed: site.areaServed },
+      })),
+    },
+    ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
   };
   const website = {
     "@type": "WebSite",
@@ -32,6 +45,17 @@ function structuredData() {
     description: site.description,
     inLanguage: site.language,
     publisher: { "@id": `${home}#organization` },
+  };
+  const webPage = {
+    "@type": "WebPage",
+    "@id": `${home}#webpage`,
+    url: home,
+    name: site.title,
+    description: site.description,
+    inLanguage: site.language,
+    isPartOf: { "@id": `${home}#website` },
+    about: { "@id": `${home}#organization` },
+    primaryImageOfPage: { "@type": "ImageObject", url: absolute(site.ogImage.path), width: site.ogImage.width, height: site.ogImage.height },
   };
   const faqPage = {
     "@type": "FAQPage",
@@ -44,7 +68,7 @@ function structuredData() {
     })),
   };
   // "<" is escaped so the JSON can never close the script element early
-  return JSON.stringify({ "@context": "https://schema.org", "@graph": [organization, website, faqPage] }).replace(/</g, "\\u003c");
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": [organization, website, webPage, faqPage] }).replace(/</g, "\\u003c");
 }
 
 function crawlFiles() {

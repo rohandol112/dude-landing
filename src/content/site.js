@@ -29,4 +29,10 @@ export const site = {
   themeColor: "#fed900",
   backgroundColor: "#fcfcfb",
   ogImage: { path: "/og-image.jpg", width: 1200, height: 630, alt: "Dudestrap — Your Ideas, Our Execution." },
+  // Official profiles (Instagram, LinkedIn, YouTube, app store listings). They tell search engines
+  // these accounts are the same business, which strengthens the brand result for "dudestrap".
+  sameAs: [],
+  areaServed: "India",
+  // Proves ownership to IndexNow (Bing, Yandex, Seznam); served as /<key>.txt from public/.
+  indexNowKey: "accc5f5bf7781a019aaee2feea0da049",
 };

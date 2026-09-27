@@ -19,8 +19,9 @@ Marketing site for Düdestrap, a managed-supply marketplace for custom products,
 npm install
 npm run dev
 npm run lint
-npm run build
+npm run build      # client build, server build, then pre-render into dist/index.html
 npm run preview
+npm run indexnow   # after a production deploy: ask Bing and other IndexNow engines to recrawl
 ```
 
 ## Structure
@@ -34,6 +35,7 @@ src/
   content/
     site.js                site URL, title, description and share image (single source for SEO)
     faq.js                 FAQ copy, shown on the page and published as structured data
+    services.js            service list, shown as the hero pills and published as structured data
   components/
     ui/                    shadcn-style primitives
     sections/              page sections: showcase, lanes, process, trust, pricing,
@@ -59,6 +61,10 @@ src/
 ```
 
 `vite/seo-plugin.js` writes the page title, meta description, canonical URL, Open Graph and Twitter cards, JSON-LD structured data (Organization, WebSite, FAQPage), `robots.txt`, `sitemap.xml` and `site.webmanifest` from `src/content/` at build time. If the primary domain changes, update `site.url` in `src/content/site.js`.
+
+The page is pre-rendered: `npm run build` renders `src/entry-server.jsx` to HTML (`scripts/prerender.js`) and the browser hydrates it, so crawlers and link previews get the full content without running JavaScript. `vercel.json` pins that build command and permanently redirects `dude-landing.vercel.app` to the canonical domain.
+
+Add official profile URLs (Instagram, LinkedIn, YouTube, app store listings) to `site.sameAs` as they go live.
 
 `assets/` at the repository root holds the original hero reference artwork used to produce the backdrops; the page does not load it.
 

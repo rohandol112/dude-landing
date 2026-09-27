@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { DESKTOP_QUERY, REDUCED_MOTION_QUERY } from "@/lib/breakpoints";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 const HeroClouds = lazy(() => import("@/components/hero-clouds"));
 
@@ -32,7 +33,7 @@ export function HeroSky() {
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState(true);
-  const [compact, setCompact] = useState(() => !window.matchMedia(DESKTOP_QUERY).matches);
+  const compact = !useMediaQuery(DESKTOP_QUERY, true);
 
   useEffect(() => {
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -47,13 +48,6 @@ export function HeroSky() {
       cancelIdle();
       reducedMotion.removeEventListener("change", onPreferenceChange);
     };
-  }, []);
-
-  useEffect(() => {
-    const desktop = window.matchMedia(DESKTOP_QUERY);
-    const onChange = () => setCompact(!desktop.matches);
-    desktop.addEventListener("change", onChange);
-    return () => desktop.removeEventListener("change", onChange);
   }, []);
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "dist-ssr"]),
   {
     files: ["**/*.{js,jsx}"],
     extends: [js.configs.recommended, reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
@@ -18,5 +18,10 @@ export default defineConfig([
         sourceType: "module",
       },
     },
+  },
+  {
+    // build-time code runs in Node
+    files: ["scripts/**/*.js", "vite/**/*.js", "vite.config.js"],
+    languageOptions: { globals: globals.node },
   },
 ]);

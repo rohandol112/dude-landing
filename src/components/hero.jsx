@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 
 import { HeroSky } from "@/components/hero-sky";
 import { Button } from "@/components/ui/button";
+import { services } from "@/content/services";
 import { DESKTOP_QUERY } from "@/lib/breakpoints";
 import { EASE_OUT } from "@/lib/motion";
 import { useGetAppLink } from "@/lib/use-get-app-link";
@@ -14,14 +15,14 @@ import plate1280 from "@/assets/hero/plate-1280.webp";
 import plate1920 from "@/assets/hero/plate-1920.webp";
 import plate2560 from "@/assets/hero/plate-2560.webp";
 
-const starters = [
-  { icon: Shirt, label: "Custom apparel", href: "#products" },
-  { icon: Gift, label: "Custom gifts", href: "#business" },
-  { icon: Briefcase, label: "Corporate events", href: "#events" },
-  { icon: Theater, label: "Stage & décor", href: "#events" },
-  { icon: Printer, label: "Print & branding", href: "#products" },
-  { icon: Camera, label: "Event photography", href: "#events" },
-];
+const serviceIcons = {
+  "custom-apparel": Shirt,
+  "custom-gifts": Gift,
+  "corporate-events": Briefcase,
+  "stage-decor": Theater,
+  "print-branding": Printer,
+  "event-photography": Camera,
+};
 
 const headline = {
   hidden: {},
@@ -120,14 +121,17 @@ export function Hero() {
               what are you planning?
             </p>
             <ul>
-              {starters.map(({ icon: Icon, label, href }) => (
-                <li key={label}>
-                  <a href={href} className="starter-pill">
-                    <Icon aria-hidden="true" />
-                    {label}
-                  </a>
-                </li>
-              ))}
+              {services.map(({ key, label, href }) => {
+                const Icon = serviceIcons[key];
+                return (
+                  <li key={key}>
+                    <a href={href} className="starter-pill">
+                      <Icon aria-hidden="true" />
+                      {label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </motion.nav>
         </div>
