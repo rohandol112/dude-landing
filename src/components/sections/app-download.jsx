@@ -1,4 +1,4 @@
-import { Bell, CreditCard, FileCheck2, MessageCircle, Search } from "lucide-react";
+import { BellIcon, ChatBubbleOvalLeftIcon, CreditCardIcon, DocumentCheckIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { motion } from "motion/react";
 
 import { StoreBadges } from "@/components/store-badges";
@@ -9,10 +9,10 @@ import { EASE_OUT, inView, revealUp, stagger } from "@/lib/motion";
 import appIcon from "@/assets/brand/app-icon.png";
 
 const features = [
-  { icon: Search, text: "Browse the catalogue or start a custom request" },
-  { icon: FileCheck2, text: "Review quotes and approve proofs in a tap" },
-  { icon: CreditCard, text: "Pay securely with Razorpay" },
-  { icon: Bell, text: "Live updates from quote to delivery" },
+  { icon: MagnifyingGlassIcon, text: "Browse the catalogue or start a custom request" },
+  { icon: DocumentCheckIcon, text: "Review quotes and approve proofs in a tap" },
+  { icon: CreditCardIcon, text: "Pay securely with Razorpay" },
+  { icon: BellIcon, text: "Live updates from quote to delivery" },
 ];
 
 const orders = [
@@ -30,11 +30,11 @@ function PhonePreview() {
           <div className="flex items-center justify-between px-5 pt-4">
             <Wordmark className="w-[92px]" decorative />
             <span className="grid size-8 place-items-center rounded-full bg-white shadow-sm">
-              <Bell className="size-4 text-ink" />
+              <BellIcon className="size-4 text-ink" strokeWidth={2} />
             </span>
           </div>
           <p className="px-5 pt-5 font-display text-[26px] leading-tight text-ink">
-            Your <em>orders</em>
+            Your <span className="text-ink/50">orders</span>
           </p>
           <div className="flex flex-col gap-2.5 px-4 pt-4 pb-5">
             {orders.map((order, index) => (
@@ -55,7 +55,7 @@ function PhonePreview() {
             ))}
             <div className="mt-1 grid h-11 place-items-center rounded-full bg-ink text-[13px] font-semibold text-white">Start a request</div>
             <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-ink/50">
-              <MessageCircle className="size-3.5" />
+              <ChatBubbleOvalLeftIcon className="size-3.5" strokeWidth={2} />
               Updates also arrive on WhatsApp
             </div>
           </div>
@@ -71,8 +71,8 @@ export function AppDownload() {
       <div className="mx-auto grid max-w-[1200px] items-center gap-16 px-5 lg:grid-cols-[1.1fr_1fr]">
         <motion.div className="flex flex-col gap-7" variants={stagger(0.09)} initial="hidden" whileInView="show" viewport={inView}>
           <motion.img variants={revealUp} src={appIcon} alt="" width="72" height="72" className="size-[72px] rounded-[20px] shadow-[0_12px_30px_rgba(190,150,0,0.3)]" />
-          <motion.h2 variants={revealUp} id="app-title" className="font-display text-[clamp(2.25rem,5.2vw,4.25rem)] leading-[1.02] text-ink">
-            Your ideas, <em className="italic">in your pocket.</em>
+          <motion.h2 variants={revealUp} id="app-title" className="font-display text-[clamp(2.25rem,5.2vw,4.25rem)] leading-[1.02] text-balance text-ink">
+            Your ideas, <span className="whitespace-nowrap text-ink/50">in your pocket.</span>
           </motion.h2>
           <motion.p variants={revealUp} className="max-w-xl text-[17px] leading-relaxed text-ink/65 md:text-lg">
             Get the Dudestrap app to order, approve and track everything from your phone.
@@ -81,7 +81,7 @@ export function AppDownload() {
             {features.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-start gap-3 text-[15px] text-ink/75">
                 <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-brand/30 text-ink">
-                  <Icon className="size-4" aria-hidden="true" />
+                  <Icon className="size-4" strokeWidth={2} aria-hidden="true" />
                 </span>
                 <span className="pt-1">{text}</span>
               </li>

@@ -42,7 +42,7 @@ export function ClosingCta() {
             from an idea… to real experiences
           </motion.p>
           <motion.h2 id="cta-title" variants={revealUp} className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1.02] text-ink">
-            Got an idea? <em className="italic">Let&apos;s make it real.</em>
+            Got an idea? <span className="block text-ink/50">Let&apos;s make it real.</span>
           </motion.h2>
           <motion.p variants={revealUp} className="max-w-xl text-lg text-ink/65">
             Get the app, tell us what you need, and we&apos;ll come back with a clear quote and handle everything from there.

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { ClipboardList, FileSignature, ShieldCheck, Sparkles } from "lucide-react";
+import { ClipboardDocumentListIcon, PencilSquareIcon, ShieldCheckIcon, TruckIcon } from "@heroicons/react/24/outline";
 import { motion, useScroll, useSpring } from "motion/react";
 
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -7,22 +7,22 @@ import { inView, revealUp, stagger } from "@/lib/motion";
 
 const steps = [
   {
-    icon: ClipboardList,
+    icon: ClipboardDocumentListIcon,
     title: "Tell us what you need",
     body: "Pick from the catalogue, or share your requirement and budget and we take it from there.",
   },
   {
-    icon: FileSignature,
+    icon: PencilSquareIcon,
     title: "Get a clear quote",
     body: "Catalogue prices are fixed up front. Custom work gets a versioned quotation you accept and sign.",
   },
   {
-    icon: ShieldCheck,
+    icon: ShieldCheckIcon,
     title: "Pay securely",
     body: "Pay through Razorpay. Your payment is held in escrow until the job is delivered.",
   },
   {
-    icon: Sparkles,
+    icon: TruckIcon,
     title: "We make it real",
     body: "A vetted vendor is assigned, you approve the proof, quality checks run, and it arrives with proof of delivery.",
   },

@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRightIcon } from "@heroicons/react/20/solid";
 import { motion } from "motion/react";
 
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -73,7 +73,7 @@ function LaneCard({ lane }) {
           className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-ink underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-[#8a6400]"
         >
           Order in the app
-          <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+          <ArrowUpRightIcon className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
         </a>
       </div>
     </motion.article>

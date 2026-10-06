@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Plus } from "lucide-react";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "motion/react";
 
 import { faqs } from "@/content/faq";
@@ -25,7 +25,7 @@ function Item({ q, a, open, onToggle }) {
             transition={{ duration: 0.3, ease: EASE_OUT }}
             className="grid size-9 shrink-0 place-items-center rounded-full bg-mist text-ink"
           >
-            <Plus className="size-5" aria-hidden="true" />
+            <PlusIcon className="size-5" aria-hidden="true" />
           </motion.span>
         </button>
       </h3>

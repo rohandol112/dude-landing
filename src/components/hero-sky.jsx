@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { DESKTOP_QUERY, REDUCED_MOTION_QUERY } from "@/lib/breakpoints";
+import { readMotionBudget } from "@/lib/motion-budget";
 import { useMediaQuery } from "@/lib/use-media-query";
 
 const HeroClouds = lazy(() => import("@/components/hero-clouds"));
@@ -25,10 +26,11 @@ function whenIdle(callback) {
 
 /**
  * Slow-drifting three.js clouds behind the nav and headline. Loaded after first paint so it
- * never competes with the hero image, skipped for reduced motion, Data Saver and
- * browsers without WebGL, and paused whenever the hero is off-screen.
+ * never competes with the hero image, skipped on the lite motion budget (reduced motion, Data Saver,
+ * low-end devices) and browsers without WebGL, and paused whenever the hero is off-screen.
+ * `deferred` holds it back while the hero unfold plays, so no cloud drifts across the folding paper.
  */
-export function HeroSky() {
+export function HeroSky({ deferred = false }) {
   const ref = useRef(null);
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
@@ -36,8 +38,9 @@ export function HeroSky() {
   const compact = !useMediaQuery(DESKTOP_QUERY, true);
 
   useEffect(() => {
+    if (deferred) return undefined;
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
-    if (reducedMotion.matches || navigator.connection?.saveData || !supportsWebGL()) return undefined;
+    if (readMotionBudget() !== "full" || reducedMotion.matches || !supportsWebGL()) return undefined;
 
     const cancelIdle = whenIdle(() => setEnabled(true));
     const onPreferenceChange = (event) => {
@@ -48,7 +51,7 @@ export function HeroSky() {
       cancelIdle();
       reducedMotion.removeEventListener("change", onPreferenceChange);
     };
-  }, []);
+  }, [deferred]);
 
   useEffect(() => {
     const node = ref.current;

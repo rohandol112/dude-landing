@@ -1,4 +1,5 @@
-import { ArrowRight, BadgeIndianRupee, CalendarDays, Check, MapPin, Ruler } from "lucide-react";
+import { ArrowsPointingOutIcon, CalendarDaysIcon, CurrencyRupeeIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, CheckIcon } from "@heroicons/react/20/solid";
 import { motion, useReducedMotion } from "motion/react";
 
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -59,7 +60,7 @@ export function Vendors() {
             {benefits.map((benefit) => (
               <motion.li key={benefit} variants={revealUp} className="flex items-start gap-3 text-[16px] text-ink/80">
                 <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-ink text-brand">
-                  <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
+                  <CheckIcon className="size-3.5" aria-hidden="true" />
                 </span>
                 {benefit}
               </motion.li>
@@ -69,7 +70,7 @@ export function Vendors() {
             <Button asChild variant="ink" size="lg" className="group">
               <a href={links.vendorPlayStore}>
                 Get the vendor app
-                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+                <ArrowRightIcon className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
               </a>
             </Button>
           </motion.div>
@@ -96,14 +97,14 @@ export function Vendors() {
             </div>
             <dl className="grid grid-cols-2 gap-3 text-sm">
               {[
-                { icon: CalendarDays, label: "Event date", value: "Sat, 14 Nov" },
-                { icon: MapPin, label: "Service area", value: "Within your zone" },
-                { icon: Ruler, label: "Scope", value: "40 × 24 ft stage" },
-                { icon: BadgeIndianRupee, label: "Payable", value: "Per your rate card" },
+                { icon: CalendarDaysIcon, label: "Event date", value: "Sat, 14 Nov" },
+                { icon: MapPinIcon, label: "Service area", value: "Within your zone" },
+                { icon: ArrowsPointingOutIcon, label: "Scope", value: "40 × 24 ft stage" },
+                { icon: CurrencyRupeeIcon, label: "Payable", value: "Per your rate card" },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex flex-col gap-1 rounded-2xl bg-mist/70 p-3">
                   <dt className="flex items-center gap-1.5 text-xs text-ink/50">
-                    <Icon className="size-3.5" />
+                    <Icon className="size-3.5" strokeWidth={2} />
                     {label}
                   </dt>
                   <dd className="font-medium text-ink">{value}</dd>
@@ -124,7 +125,7 @@ export function Vendors() {
             transition={{ duration: 0.7, delay: 0.45, ease: EASE_OUT }}
           >
             <span className="grid size-9 place-items-center rounded-xl bg-brand text-ink">
-              <BadgeIndianRupee className="size-5" />
+              <CurrencyRupeeIcon className="size-5" />
             </span>
             <span className="flex flex-col">
               <span className="text-sm font-semibold">Payout released</span>

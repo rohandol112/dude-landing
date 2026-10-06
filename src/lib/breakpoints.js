@@ -7,3 +7,6 @@ export const DESKTOP_QUERY = "(min-width: 660px) and (min-aspect-ratio: 5/4)";
 export const DESKTOP_NAV_QUERY = "(min-width: 1024px) and (min-aspect-ratio: 5/4)";
 
 export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+/** Section videos switch from the portrait cut to the 16:10 cut (Tailwind `lg`). */
+export const SCENE_WIDE_QUERY = "(min-width: 1024px)";

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { inView, revealUp, stagger } from "@/lib/motion";
 
 /**
- * Eyebrow, serif headline with an italic accent, and a short lede — revealed in sequence.
+ * Eyebrow, serif headline whose second phrase drops to a muted tone, and a short lede — revealed in sequence.
  * `tone="dark"` flips the colours for sections on the ink background.
  */
 export function SectionHeading({ id, eyebrow, title, accent, lede, align = "center", tone = "light", className }) {
@@ -24,12 +24,8 @@ export function SectionHeading({ id, eyebrow, title, accent, lede, align = "cent
       {eyebrow ? (
         <motion.span
           variants={revealUp}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[13px] font-medium",
-            dark ? "bg-white/10 text-white/85 ring-1 ring-white/15" : "bg-white text-ink/75 shadow-[0_1px_0_#fff_inset,0_6px_18px_rgba(30,50,70,0.08)] ring-1 ring-ink/5",
-          )}
+          className={cn("text-[13px] font-semibold tracking-[0.14em] uppercase", dark ? "text-brand" : "text-[#8a6400]")}
         >
-          <span className="size-1.5 rounded-full bg-brand" aria-hidden="true" />
           {eyebrow}
         </motion.span>
       ) : null}
@@ -41,7 +37,7 @@ export function SectionHeading({ id, eyebrow, title, accent, lede, align = "cent
           dark ? "text-white" : "text-ink",
         )}
       >
-        {title} {accent ? <em className="italic">{accent}</em> : null}
+        {title} {accent ? <span className={dark ? "text-white/55" : "text-ink/50"}>{accent}</span> : null}
       </motion.h2>
       {lede ? (
         <motion.p

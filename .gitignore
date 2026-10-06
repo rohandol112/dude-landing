@@ -43,6 +43,8 @@ Thumbs.db
 
 # Large media files
 *.mp4
+# ...except the site's pre-rendered section videos (rendered from video/)
+!public/videos/*.mp4
 *.tiff
 *.avi
 *.flv

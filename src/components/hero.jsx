@@ -1,11 +1,16 @@
-import { ArrowRight, Briefcase, Camera, Gift, Printer, Shirt, Smartphone, Theater } from "lucide-react";
+import { BriefcaseIcon, CameraIcon, DevicePhoneMobileIcon, GiftIcon, PrinterIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { useCallback, useState } from "react";
 import { motion } from "motion/react";
 
+import { HeroIntro } from "@/components/hero-intro";
 import { HeroSky } from "@/components/hero-sky";
+import { ShirtIcon, StageIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { services } from "@/content/services";
 import { DESKTOP_QUERY } from "@/lib/breakpoints";
 import { EASE_OUT } from "@/lib/motion";
+import { useMotionBudget } from "@/lib/motion-budget";
 import { useGetAppLink } from "@/lib/use-get-app-link";
 
 import compact780 from "@/assets/hero/compact-780.webp";
@@ -16,12 +21,12 @@ import plate1920 from "@/assets/hero/plate-1920.webp";
 import plate2560 from "@/assets/hero/plate-2560.webp";
 
 const serviceIcons = {
-  "custom-apparel": Shirt,
-  "custom-gifts": Gift,
-  "corporate-events": Briefcase,
-  "stage-decor": Theater,
-  "print-branding": Printer,
-  "event-photography": Camera,
+  "custom-apparel": ShirtIcon,
+  "custom-gifts": GiftIcon,
+  "corporate-events": BriefcaseIcon,
+  "stage-decor": StageIcon,
+  "print-branding": PrinterIcon,
+  "event-photography": CameraIcon,
 };
 
 const headline = {
@@ -71,11 +76,13 @@ function BrushUnderline() {
 
 export function Hero() {
   const appHref = useGetAppLink();
+  const [introDone, setIntroDone] = useState(false);
+  const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
   return (
-    <section id="top" className="hero" aria-labelledby="hero-title">
+    <section id="top" className="hero" aria-labelledby="hero-title" data-intro={introDone ? "done" : undefined}>
       <div className="hero-sky-layer">
-        <HeroSky />
+        <HeroSky deferred={!introDone} />
       </div>
 
       <div className="hero-stage">
@@ -96,22 +103,22 @@ export function Hero() {
           </motion.h1>
 
           <motion.p className="hero-lede" {...fadeIn(0.45)}>
-            Dudestrap is a managed-supply marketplace for custom products,{" "}
+            Plan events, book vetted vendors and order custom merch and gifts,{" "}
             <br className="desktop-break" />
-            events and all your business requirements.
+            all managed by Dudestrap in one app.
           </motion.p>
 
           <motion.div className="hero-actions" {...fadeIn(0.55)}>
             <Button asChild variant="ink" className="hero-cta">
               <a href={appHref}>
-                <Smartphone aria-hidden="true" />
+                <DevicePhoneMobileIcon aria-hidden="true" />
                 Get the app
               </a>
             </Button>
             <Button asChild variant="glass" className="hero-cta">
               <a href="#how-it-works">
                 See how it works
-                <ArrowRight aria-hidden="true" />
+                <ArrowRightIcon aria-hidden="true" />
               </a>
             </Button>
           </motion.div>
@@ -136,7 +143,7 @@ export function Hero() {
           </motion.nav>
         </div>
 
-        <div className="hero-art">
+        <div className="hero-art" data-intro={introDone ? "done" : undefined}>
           <picture className="hero-backdrop">
             <source
               media={DESKTOP_QUERY}
@@ -153,6 +160,7 @@ export function Hero() {
               decoding="async"
             />
           </picture>
+          <HeroIntro onDone={handleIntroDone} />
         </div>
       </div>
     </section>

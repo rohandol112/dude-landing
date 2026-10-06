@@ -1,14 +1,14 @@
 @import "tailwindcss";
+/* The Remotion project has its own toolchain; nothing in it styles the site. */
+@source not "../video";
 @import "@fontsource-variable/google-sans";
 @import "@fontsource-variable/newsreader/opsz.css";
-@import "@fontsource-variable/newsreader/opsz-italic.css";
 @import "@fontsource/caveat/latin-600.css";
 
 /*
  * Layout units
  *   --u  desktop: one pixel of the 1024 x 705 reference composition
  *   --m  compact: one pixel of the 390px-wide phone composition
- *   --d  dashboard: one pixel of the dashboard card's own design width
  * Registered so they compute to absolute lengths where declared and
  * inherit as px, regardless of which container a descendant sits in.
  */
@@ -19,12 +19,6 @@
 }
 
 @property --m {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 1px;
-}
-
-@property --d {
   syntax: "<length>";
   inherits: true;
   initial-value: 1px;
@@ -311,7 +305,6 @@ button:focus-visible {
   transform-origin: top right;
   pointer-events: none;
   transition: opacity 170ms ease, transform 170ms ease, visibility 170ms ease;
-  backdrop-filter: blur(20px);
 }
 
 .mobile-menu[data-open="true"] {
@@ -438,18 +431,18 @@ button:focus-visible {
   height: 100%;
 }
 
+/* The accent word stays upright; the brush stroke under it carries the emphasis. */
 .hero-copy em {
   position: relative;
   display: inline-block;
-  font-style: italic;
-  letter-spacing: 0.014em;
+  font-style: normal;
 }
 
 .brush-underline {
   position: absolute;
   top: 0.93em;
-  left: -0.005em;
-  width: 4.31em;
+  left: 0;
+  width: calc(100% - 0.12em);
   height: 0.16em;
   overflow: visible;
   fill: var(--brand-yellow);
@@ -457,6 +450,7 @@ button:focus-visible {
 
 .hero-lede {
   max-width: min(calc(340 * var(--m)), 590px);
+  text-wrap: balance;
   margin: min(calc(22 * var(--m)), 34px) auto 0;
   color: #34383b;
   font-size: min(calc(14.5 * var(--m)), 22px);
@@ -478,6 +472,7 @@ button:focus-visible {
 }
 
 .hero-cta svg {
+  stroke-width: 1.75;
   width: 18px;
   height: 18px;
 }
@@ -526,6 +521,7 @@ button:focus-visible {
 }
 
 .starter-pill svg {
+  stroke-width: 1.9;
   width: 15px;
   height: 15px;
   padding: 4px;
@@ -551,7 +547,9 @@ button:focus-visible {
   margin: calc(6 * var(--m)) auto 0;
 }
 
-.hero-backdrop img {
+.hero-backdrop img,
+
+.hero-intro {
   mask-image: linear-gradient(180deg, transparent, #000 calc(44 * var(--m)), #000 calc(100% - 30 * var(--m)), transparent);
 }
 
@@ -567,7 +565,9 @@ button:focus-visible {
   background: linear-gradient(180deg, #c9e4f7 0, #c9e4f7 calc(100% - 1100px), #d3e8f5 calc(100% - 260px), var(--paper) calc(100% - 20px));
 }
 
-.hero-backdrop img {
+.hero-backdrop img,
+
+.hero-intro {
   position: absolute;
   inset: 0;
   display: block;
@@ -577,245 +577,63 @@ button:focus-visible {
   user-select: none;
 }
 
-/* Dashboard preview (product showcase section) */
-.dashboard {
-  position: relative;
-  width: 100%;
+/*
+ * Hero unfold (src/components/hero-intro.jsx) plays over the artwork. On the full motion budget the
+ * artwork stays hidden until the unfold ends, so it never shows, folds up and opens again; if the
+ * script never runs it appears after 6s anyway. Its last frame is the artwork, so the swap is invisible.
+ */
+.hero-intro {
+  pointer-events: none;
 }
 
-.dashboard-card {
-  container: dashboard / inline-size;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: clamp(16px, 2.4vw, 26px);
-  background: rgba(247, 247, 246, 0.93);
-  box-shadow: 0 18px 42px rgba(58, 52, 38, 0.16), 0 2px 6px rgba(58, 52, 38, 0.06);
-  backdrop-filter: blur(18px) saturate(1.1);
+.hero-backdrop img {
+  transition: opacity 600ms ease;
 }
 
-.dashboard-layout {
-  --d: calc(100cqw / 300);
-  display: grid;
-  height: 100%;
-  grid-template-columns: minmax(0, 1fr);
+html[data-motion="full"] .hero-art:not([data-intro="done"]) .hero-backdrop img {
+  opacity: 0;
+  animation: hero-art-fallback 600ms ease 9s forwards;
 }
 
-.dashboard-sidebar {
+.hero-art[data-intro="done"] .hero-intro {
+  visibility: hidden;
+  transition: visibility 0s linear 650ms;
+}
+
+html[data-motion="lite"] .hero-intro {
   display: none;
 }
 
-.dashboard-main {
-  position: relative;
-  display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto auto;
-  align-content: start;
-  column-gap: calc(10 * var(--d));
-  row-gap: calc(9 * var(--d));
-  padding: calc(13 * var(--d)) calc(12 * var(--d)) calc(11 * var(--d));
+@keyframes hero-art-fallback {
+  to {
+    opacity: 1;
+  }
 }
 
-.dashboard-utility {
-  display: none;
+/*
+ * Lite motion budget (low-end devices, Data Saver, reduced motion): no live blur behind the fixed
+ * nav, the pills and glass buttons, since it repaints on every scroll frame. Fuller fills keep them legible.
+ */
+html[data-motion="lite"] .nav-shell {
+  backdrop-filter: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 245, 251, 0.94));
 }
 
-.dashboard-main h2 {
-  grid-area: 1 / 1;
-  align-self: center;
-  margin: 0;
-  color: #111314;
-  font-size: calc(15 * var(--d));
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+html[data-motion="lite"] .starter-pill {
+  backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.92);
 }
 
-.dashboard-new-request {
-  grid-area: 1 / 2;
-  align-self: center;
-  height: calc(27 * var(--d));
-  gap: calc(5 * var(--d));
-  padding-inline: calc(11 * var(--d)) calc(12 * var(--d));
-  border-radius: 999px;
-  color: #141100;
-  background: var(--brand-yellow);
-  box-shadow: 0 4px 10px rgba(214, 166, 0, 0.18);
-  font-size: calc(10.5 * var(--d));
-  font-weight: 600;
+html[data-motion="lite"] [class*="backdrop-blur"] {
+  backdrop-filter: none;
 }
 
-.dashboard-new-request svg {
-  width: calc(12 * var(--d));
-  height: calc(12 * var(--d));
-  stroke-width: 2.4;
-}
-
-.dashboard-toolbar {
-  display: flex;
-  grid-column: 1 / -1;
-  gap: calc(8 * var(--d));
-}
-
-.dashboard-search {
-  position: relative;
-  flex: 1 1 auto;
-}
-
-.dashboard-search > svg {
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: calc(10 * var(--d));
-  width: calc(11 * var(--d));
-  height: calc(11 * var(--d));
-  color: #9aa0a4;
-  stroke-width: 2;
-  transform: translateY(-50%);
-}
-
-.dashboard-search input {
-  height: calc(28 * var(--d));
-  padding: 0 calc(10 * var(--d)) 0 calc(27 * var(--d));
-  border-color: rgba(18, 22, 25, 0.05);
-  border-radius: 999px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(28, 34, 38, 0.05);
-  font-size: calc(9.5 * var(--d));
-}
-
-.dashboard-search input::placeholder {
-  color: #aeb3b7;
-}
-
-.dashboard-filter {
-  width: calc(28 * var(--d));
-  height: calc(28 * var(--d));
-  border-color: rgba(18, 22, 25, 0.04);
-  background: white;
-  box-shadow: 0 2px 8px rgba(28, 34, 38, 0.06);
-}
-
-.dashboard-filter svg {
-  width: calc(12 * var(--d));
-  height: calc(12 * var(--d));
-  color: #1b1d1f;
-}
-
-.dashboard-main [data-slot="table-container"] {
-  grid-column: 1 / -1;
-  overflow: hidden;
-  border-radius: calc(10 * var(--d));
-  background: #fdfdfd;
-  box-shadow: 0 2px 8px rgba(25, 31, 35, 0.045);
-}
-
-.request-table {
-  width: 100%;
-  table-layout: fixed;
-  color: #3e4245;
-  font-size: calc(10 * var(--d));
-}
-
-.request-table tr {
-  border-color: #efefee;
-}
-
-.request-table thead tr {
-  background: #f6f6f5;
-}
-
-.request-table tbody tr:hover {
-  background: transparent;
-}
-
-.request-table th,
-.request-table td {
-  height: calc(29 * var(--d));
-  padding: 0 0 0 calc(10 * var(--d));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 400;
-}
-
-.request-table th {
-  height: calc(24 * var(--d));
-  color: #585c5f;
-  font-size: calc(9 * var(--d));
-  font-weight: 500;
-}
-
-.request-table .number-column,
-.request-table .requirement-column,
-.request-table .date-column {
-  display: none;
-}
-
-.request-table th.type-column {
-  width: 50%;
-}
-
-.request-table th.status-column {
-  width: 38%;
-}
-
-.request-table th.action-column {
-  width: 12%;
-}
-
-.request-table tbody tr:nth-child(n + 5) {
-  display: none;
-}
-
-.request-table th.number-column > svg {
-  display: inline;
-  width: calc(8 * var(--d));
-  height: calc(8 * var(--d));
-  margin-left: calc(1 * var(--d));
-  vertical-align: -0.05em;
-  color: #6b7074;
-}
-
-.sort-diamond {
-  display: inline-block;
-  width: calc(5 * var(--d));
-  height: calc(5 * var(--d));
-  margin-left: calc(3 * var(--d));
-  border-radius: 1px;
-  background: #f5c400;
-  transform: rotate(45deg) translateY(-15%);
-}
-
-.request-table [data-slot="badge"] {
-  height: calc(18 * var(--d));
-  padding: 0 calc(7.5 * var(--d));
-  font-size: calc(9 * var(--d));
-  font-weight: 500;
-  line-height: 1;
-}
-
-.status-progress {
-  color: #f0a500;
-  background: #fff3cc;
-}
-
-.status-quotation {
-  color: #2f8ff0;
-  background: #d9ecff;
-}
-
-.status-confirmed {
-  color: #1ea45a;
-  background: #d7f6e2;
-}
-
-.action-column svg {
-  width: calc(13 * var(--d));
-  height: calc(13 * var(--d));
-  color: #1f2123;
-  stroke-width: 3;
+/* Section videos: feather the edges so encoding's slight colour shift never shows as a box */
+.scene-video {
+  mask-image:
+    linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent),
+    linear-gradient(180deg, transparent, #000 3%, #000 97%, transparent);
+  mask-composite: intersect;
 }
 
 @media (min-width: 640px) {
@@ -848,229 +666,13 @@ button:focus-visible {
     font-size: 25px;
   }
 
-  .hero-backdrop img {
+  .hero-backdrop img,
+
+  .hero-intro {
     mask-image:
       linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent),
       linear-gradient(180deg, transparent, #000 calc(44 * var(--m)), #000 calc(100% - 30 * var(--m)), transparent);
     mask-composite: intersect;
-  }
-}
-
-/* Full dashboard layout once the card has room for the sidebar and every column */
-@container dashboard (min-width: 560px) {
-  .dashboard-layout {
-    --d: calc(100cqw / 688);
-    grid-template-columns: calc(150 * var(--d)) minmax(0, 1fr);
-  }
-
-  .dashboard-sidebar {
-    display: block;
-    padding: calc(28 * var(--d)) calc(18 * var(--d)) 0 calc(15 * var(--d));
-  }
-
-  .dashboard-wordmark {
-    width: calc(76 * var(--d));
-    margin: calc(5 * var(--d)) 0 calc(28 * var(--d)) calc(8 * var(--d));
-  }
-
-  .dashboard-side-nav {
-    display: grid;
-    gap: calc(0.9 * var(--d));
-  }
-
-  .dashboard-side-item {
-    display: flex;
-    height: calc(25 * var(--d));
-    align-items: center;
-    gap: calc(8 * var(--d));
-    padding-left: calc(10 * var(--d));
-    border-radius: calc(8 * var(--d));
-    color: #2f3336;
-    font-size: calc(8.6 * var(--d));
-    font-weight: 500;
-    line-height: 1;
-  }
-
-  .dashboard-side-item svg {
-    width: calc(11 * var(--d));
-    height: calc(11 * var(--d));
-    flex: 0 0 auto;
-    stroke-width: 1.9;
-  }
-
-  .dashboard-side-item[data-active="true"] {
-    color: #c79200;
-    background: #fcefbb;
-  }
-
-  .dashboard-side-item[data-muted="true"] {
-    color: #a3a7aa;
-  }
-
-  .dashboard-main {
-    grid-template-columns: minmax(0, 1fr) calc(104 * var(--d));
-    grid-template-rows: calc(15.6 * var(--d)) calc(26 * var(--d)) auto;
-    column-gap: calc(56 * var(--d));
-    row-gap: calc(9.7 * var(--d));
-    padding: calc(50.7 * var(--d)) calc(23 * var(--d)) 0 calc(6.7 * var(--d));
-  }
-
-  .dashboard-utility {
-    position: absolute;
-    top: calc(17 * var(--d));
-    right: calc(24 * var(--d));
-    display: flex;
-    align-items: center;
-    gap: calc(12 * var(--d));
-  }
-
-  .notification-icon {
-    position: relative;
-    display: grid;
-    width: calc(14 * var(--d));
-    height: calc(14 * var(--d));
-    place-items: center;
-    color: #1f2224;
-  }
-
-  .notification-icon svg {
-    width: 100%;
-    height: 100%;
-    stroke-width: 1.8;
-  }
-
-  .notification-icon i {
-    position: absolute;
-    top: calc(-1 * var(--d));
-    right: calc(-1.5 * var(--d));
-    width: calc(5 * var(--d));
-    height: calc(5 * var(--d));
-    border-radius: 50%;
-    background: #ff6b6b;
-  }
-
-  .dashboard-avatar {
-    display: grid;
-    width: calc(22 * var(--d));
-    height: calc(22 * var(--d));
-    place-items: center;
-    border-radius: 50%;
-    color: #17181a;
-    background: #fbe2a0;
-    font-size: calc(10.5 * var(--d));
-    font-weight: 600;
-  }
-
-  .dashboard-main h2 {
-    font-size: calc(14.3 * var(--d));
-  }
-
-  .dashboard-new-request {
-    grid-area: 1 / 2 / 3 / 3;
-    width: 100%;
-    height: calc(28 * var(--d));
-    margin-top: calc(3 * var(--d));
-    padding: 0;
-    gap: calc(8 * var(--d));
-    font-size: calc(9.6 * var(--d));
-  }
-
-  .dashboard-new-request svg {
-    width: calc(11 * var(--d));
-    height: calc(11 * var(--d));
-  }
-
-  .dashboard-toolbar {
-    grid-column: 1;
-    align-items: center;
-    gap: calc(9 * var(--d));
-  }
-
-  .dashboard-search input {
-    height: calc(24 * var(--d));
-    padding-left: calc(24 * var(--d));
-    font-size: calc(8.3 * var(--d));
-  }
-
-  .dashboard-search > svg {
-    left: calc(9 * var(--d));
-    width: calc(10 * var(--d));
-    height: calc(10 * var(--d));
-  }
-
-  .dashboard-filter {
-    width: calc(27 * var(--d));
-    height: calc(27 * var(--d));
-  }
-
-  .dashboard-filter svg {
-    width: calc(11 * var(--d));
-    height: calc(11 * var(--d));
-  }
-
-  .dashboard-main [data-slot="table-container"] {
-    margin-top: calc(1.3 * var(--d));
-  }
-
-  .request-table {
-    font-size: calc(9.2 * var(--d));
-  }
-
-  .request-table th,
-  .request-table td {
-    height: calc(30.65 * var(--d));
-    padding-left: calc(9 * var(--d));
-  }
-
-  .request-table th {
-    height: calc(27 * var(--d));
-    font-size: calc(8.6 * var(--d));
-  }
-
-  .request-table .number-column,
-  .request-table .requirement-column,
-  .request-table .date-column {
-    display: table-cell;
-  }
-
-  .request-table th.number-column { width: 11%; }
-  .request-table th.type-column { width: 19.45%; }
-  .request-table th.requirement-column { width: 23.9%; }
-  .request-table th.status-column { width: 19.65%; }
-  .request-table th.date-column { width: 18.3%; }
-  .request-table th.action-column { width: 7.7%; }
-
-  .request-table td.number-column {
-    color: #2b2e30;
-    font-weight: 500;
-  }
-
-  .request-table th.status-column {
-    padding-left: calc(13.5 * var(--d));
-  }
-
-  .request-table td.status-column {
-    padding-left: calc(4.5 * var(--d));
-  }
-
-  .request-table tbody tr:nth-child(n + 5) {
-    display: table-row;
-  }
-
-  .request-table [data-slot="badge"] {
-    height: calc(16 * var(--d));
-    padding: 0 calc(6 * var(--d));
-    font-size: calc(8.6 * var(--d));
-  }
-
-  .action-column svg {
-    width: calc(12 * var(--d));
-    height: calc(12 * var(--d));
-  }
-
-  .sort-diamond {
-    width: calc(4.5 * var(--d));
-    height: calc(4.5 * var(--d));
   }
 }
 
@@ -1101,6 +703,7 @@ button:focus-visible {
     inset: 0;
     padding: 0;
     pointer-events: none;
+    perspective: 1200px;
   }
 
   .hero-copy h1,
@@ -1191,7 +794,9 @@ button:focus-visible {
     margin: 0;
   }
 
-  .hero-backdrop img {
+  .hero-backdrop img,
+
+  .hero-intro {
     object-position: top;
     mask-image: linear-gradient(180deg, #000 calc(100% - 70 * var(--u)), transparent);
   }
@@ -1199,7 +804,8 @@ button:focus-visible {
 
 /* Stage narrower than the viewport: fade the artwork into the page background */
 @media (min-width: 1921px) and (min-aspect-ratio: 1024/705) {
-  .hero-backdrop img {
+  .hero-backdrop img,
+  .hero-intro {
     mask-image:
       linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent),
       linear-gradient(180deg, #000 calc(100% - 70 * var(--u)), transparent);
@@ -1282,7 +888,6 @@ button:focus-visible {
       0 0 0 1px rgba(10, 11, 12, 0.06),
       0 24px 60px rgba(22, 34, 42, 0.18);
     translate: -50% 0;
-    backdrop-filter: blur(18px);
   }
 
   /* keeps the menu open while the pointer crosses the gap from the button */

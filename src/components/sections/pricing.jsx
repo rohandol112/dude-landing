@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRightIcon, CheckIcon } from "@heroicons/react/20/solid";
 import { motion } from "motion/react";
 
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -70,7 +70,7 @@ export function Pricing() {
               {plan.points.map((point) => (
                 <li key={point} className="flex items-center gap-3 text-[15px]">
                   <span className={cn("grid size-5 place-items-center rounded-full", plan.featured ? "bg-brand text-ink" : "bg-brand/30 text-ink")}>
-                    <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
+                    <CheckIcon className="size-3.5" aria-hidden="true" />
                   </span>
                   {point}
                 </li>
@@ -79,7 +79,7 @@ export function Pricing() {
             <Button asChild variant={plan.featured ? "brand" : "light"} size="lg" className="group mt-auto h-auto min-h-12 justify-between py-3 text-left whitespace-normal">
               <a href={appHref}>
                 {plan.cta}
-                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+                <ArrowRightIcon className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
               </a>
             </Button>
           </motion.article>

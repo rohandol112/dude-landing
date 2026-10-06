@@ -1,20 +1,38 @@
-import { BadgeCheck, BellRing, CalendarClock, Repeat, ShieldCheck, Stamp } from "lucide-react";
+import {
+  ArrowPathIcon,
+  BellAlertIcon,
+  CalendarDaysIcon,
+  CameraIcon,
+  CheckBadgeIcon,
+  DocumentCheckIcon,
+  PrinterIcon,
+  ShieldCheckIcon,
+  TruckIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import { motion, useReducedMotion } from "motion/react";
 
+import { ShirtIcon, StageIcon } from "@/components/icons";
 import { SectionHeading } from "@/components/sections/section-heading";
 import glyph from "@/assets/brand/glyph.png";
 import { EASE_OUT, inView, revealUp, stagger } from "@/lib/motion";
 
 const features = [
-  { icon: BadgeCheck, title: "Vetted vendors", body: "Every vendor's documents, service areas and rate cards are reviewed before they take a job." },
-  { icon: Repeat, title: "Automatic back-up", body: "If a vendor declines or misses an offer, the next best match is offered the job automatically." },
-  { icon: Stamp, title: "Proof before production", body: "You approve the proof. Quality checks run before anything ships or goes live." },
-  { icon: ShieldCheck, title: "Escrow and refunds", body: "Vendors are paid after delivery. Refunds and assurance claims are handled on the platform." },
-  { icon: CalendarClock, title: "Your date, held", body: "Capacity is reserved when you order, so busy festival dates don't slip." },
-  { icon: BellRing, title: "Updates everywhere", body: "WhatsApp, SMS, email and push: you hear as each step moves." },
+  { icon: CheckBadgeIcon, title: "Vetted vendors", body: "Every vendor's documents, service areas and rate cards are reviewed before they take a job." },
+  { icon: ArrowPathIcon, title: "Automatic back-up", body: "If a vendor declines or misses an offer, the next best match is offered the job automatically." },
+  { icon: DocumentCheckIcon, title: "Proof before production", body: "You approve the proof. Quality checks run before anything ships or goes live." },
+  { icon: ShieldCheckIcon, title: "Escrow and refunds", body: "Vendors are paid after delivery. Refunds and assurance claims are handled on the platform." },
+  { icon: CalendarDaysIcon, title: "Your date, held", body: "Capacity is reserved when you order, so busy festival dates don't slip." },
+  { icon: BellAlertIcon, title: "Updates everywhere", body: "WhatsApp, SMS, email and push: you hear as each step moves." },
 ];
 
-const vendors = ["Apparel", "Print", "Stage & décor", "Photography", "Logistics"];
+const vendors = [
+  { label: "Apparel", icon: ShirtIcon },
+  { label: "Print", icon: PrinterIcon },
+  { label: "Stage & décor", icon: StageIcon },
+  { label: "Photography", icon: CameraIcon },
+  { label: "Logistics", icon: TruckIcon },
+];
 
 function Pulse({ path, begin, duration = 2.6 }) {
   return (
@@ -30,7 +48,8 @@ const draw = {
   show: (i = 0) => ({ pathLength: 1, opacity: 1, transition: { duration: 1.2, delay: 0.2 + i * 0.12, ease: EASE_OUT } }),
 };
 
-function Node({ x, y, r, label, hub, index = 0 }) {
+function Node({ x, y, r, label, hub, icon: Icon, index = 0 }) {
+  const iconSize = Math.min(r * 1.1, 26);
   return (
     <motion.g
       initial={{ opacity: 0, scale: 0.6 }}
@@ -42,6 +61,9 @@ function Node({ x, y, r, label, hub, index = 0 }) {
       <circle cx={x} cy={y} r={r} fill={hub ? "#fed900" : "#16181a"} stroke={hub ? "none" : "rgba(255,255,255,0.18)"} />
       {hub ? (
         <image href={glyph} x={x - r * 0.42} y={y - r * 0.52} width={r * 0.84} height={r * 1.04} preserveAspectRatio="xMidYMid meet" />
+      ) : null}
+      {Icon ? (
+        <Icon x={x - iconSize / 2} y={y - iconSize / 2} width={iconSize} height={iconSize} strokeWidth={1.75} style={{ color: "rgba(255,255,255,0.85)" }} />
       ) : null}
       {label ? (
         <text x={x} y={y + r + 22} textAnchor="middle" fill="rgba(255,255,255,0.72)" fontFamily="Google Sans Variable, Arial" fontSize="15">
@@ -74,14 +96,14 @@ function NetworkWide({ animate }) {
           ))}
         </>
       ) : null}
-      <Node x={you.x} y={you.y} r={30} label="You" />
+      <Node x={you.x} y={you.y} r={30} label="You" icon={UserIcon} />
       <Node x={hub.x} y={hub.y} r={46} hub label="Dudestrap" index={1} />
       {vendorY.map((y, i) => (
-        <Node key={y} x={870} y={y} r={11} index={i + 2} />
+        <Node key={y} x={866} y={y} r={16} icon={vendors[i].icon} index={i + 2} />
       ))}
       {vendorY.map((y, i) => (
-        <text key={vendors[i]} x={892} y={y + 5} fill="rgba(255,255,255,0.72)" fontFamily="Google Sans Variable, Arial" fontSize="15">
-          {vendors[i]}
+        <text key={vendors[i].label} x={894} y={y + 5} fill="rgba(255,255,255,0.72)" fontFamily="Google Sans Variable, Arial" fontSize="15">
+          {vendors[i].label}
         </text>
       ))}
     </svg>
@@ -93,7 +115,7 @@ function NetworkTall({ animate }) {
   const you = { x: 180, y: 50 };
   const vendorX = [36, 108, 180, 252, 324];
   const inbound = `M ${you.x} ${you.y + 26} L ${hub.x} ${hub.y - 44}`;
-  const outbound = vendorX.map((x) => `M ${hub.x} ${hub.y + 44} C ${hub.x} 290, ${x} 280, ${x} 340`);
+  const outbound = vendorX.map((x) => `M ${hub.x} ${hub.y + 44} C ${hub.x} 290, ${x} 280, ${x} 336`);
   return (
     <svg viewBox="0 0 360 420" className="mx-auto h-auto w-full max-w-sm" role="img" aria-label="Your request goes to Dudestrap, which routes it to vetted vendors">
       <motion.g initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }}>
@@ -116,7 +138,7 @@ function NetworkTall({ animate }) {
       </text>
       <Node x={hub.x} y={hub.y} r={42} hub index={1} />
       {vendorX.map((x, i) => (
-        <Node key={x} x={x} y={352} r={10} index={i + 2} />
+        <Node key={x} x={x} y={352} r={16} icon={vendors[i].icon} index={i + 2} />
       ))}
       <text x="180" y="400" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontFamily="Google Sans Variable, Arial" fontSize="13">
         Apparel · Print · Stage · Photo · Logistics

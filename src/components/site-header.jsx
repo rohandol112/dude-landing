@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ function ResourcesMenu() {
         onClick={() => setOpen((value) => !value)}
       >
         Resources
-        <ChevronDown aria-hidden="true" data-open={open || undefined} />
+        <ChevronDownIcon aria-hidden="true" data-open={open || undefined} />
       </button>
       <AnimatePresence>
         {open ? (
@@ -142,7 +143,7 @@ export function SiteHeader() {
             aria-controls="mobile-navigation"
             onClick={toggleMenu}
           >
-            {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+            {isMenuOpen ? <XMarkIcon aria-hidden="true" /> : <Bars3Icon aria-hidden="true" />}
           </button>
         </div>
 
