@@ -16,12 +16,6 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "index.html"),
-        see: path.resolve(__dirname, "see/index.html"),
-      },
-    },
     // The three.js cloud layer is one lazy chunk (~135 kB gzip) loaded after first paint.
     chunkSizeWarningLimit: 1000,
   },

@@ -175,9 +175,7 @@ export function seoPlugin() {
   return {
     name: "dudestrap-seo",
 
-    transformIndexHtml(html, ctx) {
-      // /see is a private one-off page: no homepage metadata, not indexed
-      if (ctx?.path?.startsWith("/see")) return [meta({ name: "robots", content: "noindex, nofollow" })];
+    transformIndexHtml() {
       const home = absolute("/");
       const image = site.ogImage.url || absolute(site.ogImage.path);
       return [
