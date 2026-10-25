@@ -3,24 +3,28 @@
  * JavaScript runs: search engines, link previews and AI crawlers read it directly, and
  * the browser hydrates it instead of rendering from an empty root.
  *
- * Runs after `vite build` (client) and `vite build --ssr src/entry-server.jsx --outDir dist-ssr`.
+ * Runs after `vite build` (client) and `vite build --ssr src/entry-server.jsx --outDir dist-ssr`,
+ * then builds the blog's pages (scripts/blog-prerender.js).
  */
 import { readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { prerenderBlog } from "./blog-prerender.js";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const htmlPath = path.join(root, "dist", "index.html");
 const serverDir = path.join(root, "dist-ssr");
 
-const { render } = await import(pathToFileURL(path.join(serverDir, "entry-server.js")).href);
-const appHtml = render();
+const server = await import(pathToFileURL(path.join(serverDir, "entry-server.js")).href);
+const appHtml = server.render();
 
 const template = await readFile(htmlPath, "utf8");
 const placeholder = '<div id="root"></div>';
 if (!template.includes(placeholder)) throw new Error(`prerender: ${placeholder} not found in dist/index.html`);
 
 await writeFile(htmlPath, template.replace(placeholder, `<div id="root">${appHtml}</div>`));
-await rm(serverDir, { recursive: true, force: true });
-
 console.log(`prerender: wrote ${(appHtml.length / 1024).toFixed(1)} kB of HTML into dist/index.html`);
+
+await prerenderBlog({ dist: path.join(root, "dist"), server });
+await rm(serverDir, { recursive: true, force: true });

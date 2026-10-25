@@ -175,7 +175,9 @@ export function seoPlugin() {
   return {
     name: "dudestrap-seo",
 
-    transformIndexHtml() {
+    transformIndexHtml(html) {
+      // Blog pages write their own head tags (scripts/blog-prerender.js).
+      if (html.includes("<!--blog-head-->")) return undefined;
       const home = absolute("/");
       const image = site.ogImage.url || absolute(site.ogImage.path);
       return [

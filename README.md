@@ -19,9 +19,9 @@ Marketing site for Düdestrap, a managed-supply marketplace for custom products,
 npm install
 npm run dev
 npm run lint
-npm run build      # client build, server build, then pre-render into dist/index.html
+npm run build      # client build, server build, then pre-render into dist/ (with the blog when VITE_BLOG_API_URL is set)
 npm run preview
-npm run indexnow   # after a production deploy: ask Bing and other IndexNow engines to recrawl
+npm run indexnow   # after a production deploy: ask Bing and other IndexNow engines to recrawl every URL in the live sitemap
 ```
 
 ## Structure
@@ -32,6 +32,13 @@ src/
     brand/                 Düdestrap wordmarks and app icon (from the customer app's brand kit)
     hero/                  hero backdrops and cloud textures
     sections/              lane card images
+  blog/
+    components/            blog layout, post cards, stories carousel, article body, share links
+    api.js                 reads the API's public blog routes at build time
+    site.js                turns the posts into the index, archive, category and post pages
+    seo.js                 head tags, JSON-LD, sitemap entries and the RSS feed for blog pages
+    pages.jsx              the blog page components
+    main.jsx               hydrates the header, stories carousel and share buttons only
   content/
     site.js                site URL, title, description and share image (single source for SEO)
     faq.js                 FAQ copy, shown on the page and published as structured data
@@ -67,6 +74,26 @@ The page is pre-rendered: `npm run build` renders `src/entry-server.jsx` to HTML
 Add official profile URLs (Instagram, LinkedIn, YouTube, app store listings) to `site.sameAs` as they go live.
 
 `assets/` at the repository root holds the original hero reference artwork used to produce the backdrops; the page does not load it.
+
+## Blog
+
+The blog at `/blog` is written in the admin console by the Ops team and goes live once a Super Admin approves it. At build time the site reads published posts from the Dudestrap API's public routes (`/v1/blog/*`) and writes every blog page as static HTML, so search engines and link previews read posts without running JavaScript:
+
+- `/blog`: the lead post, the featured stories carousel, the latest posts and a section per category
+- `/blog/page/1`, `/blog/page/2`, ...: every post, 18 to a page
+- `/blog/category/<slug>`, `/blog/category/<slug>/page/2`, ...: one category
+- `/blog/<slug>`: one post
+- `/blog/rss.xml`: the feed. Every blog page is also added to `sitemap.xml`.
+
+Set `VITE_BLOG_API_URL` (for example `https://api.dudestrap.com`) in the Vercel project for Production and Preview. Without it the site builds with no blog and hides the Blog links in the header and footer. With it, a build fails if the API cannot answer, rather than deploying a site that has silently lost its posts.
+
+New posts appear after a rebuild. In Vercel, create a Deploy Hook for the production branch (Settings → Git → Deploy Hooks) and give its URL to the API as `WEBSITE_REBUILD_HOOK_URL`, with `WEBSITE_REBUILD_HOOK_ENABLED=true`. The API calls it when a post is approved (at the scheduled time for a scheduled post), archived or restored.
+
+Post images and videos load from `/blog/media/<id>`, which `vercel.json` rewrites to the API; the API answers with a short-lived signed link to the file. `cleanUrls` serves `blog/my-post.html` at `/blog/my-post`, which is the canonical URL.
+
+With `VITE_BLOG_API_URL` in `.env.local` (or the shell), `npm run dev` renders blog pages from the API on each request (`vite/blog-dev-plugin.js`) and proxies `/blog/media` to it, so a post can be checked before a deploy.
+
+Post bodies are Markdown. Raw HTML in a post is never rendered, and only the header, the stories carousel and the share buttons hydrate on blog pages; the rest is static HTML.
 
 ## Before launch
 

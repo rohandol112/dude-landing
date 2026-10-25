@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/blog/media/:mediaId",
+      "destination": "https://api.dudestrap.com/v1/blog/media/:mediaId"
+    }
+  ],
   "redirects": [
     {
       "source": "/:path*",

@@ -3,6 +3,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 
+import { BLOG_ENABLED } from "@/blog/config";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/wordmark";
 import { DESKTOP_NAV_QUERY } from "@/lib/breakpoints";
@@ -21,9 +22,16 @@ const resources = [
   { label: "Dashboard tour", href: "#platform", description: "Every request in one clear view" },
   { label: "Why Dudestrap", href: "#trust", description: "Vetted vendors, escrow and proof" },
   { label: "Questions", href: "#resources", description: "Straight answers before you order" },
+  ...(BLOG_ENABLED ? [{ label: "Blog", href: "/blog", description: "Guides, stories and news from Dudestrap" }] : []),
 ];
 
-function ResourcesMenu() {
+/**
+ * Section links are "#anchors" on the home page. Pages elsewhere, such as the blog, pass
+ * linkBase="/" so the same links lead back to those sections.
+ */
+const linkTo = (linkBase, href) => (href.startsWith("#") ? `${linkBase}${href}` : href);
+
+function ResourcesMenu({ linkBase }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -66,7 +74,7 @@ function ResourcesMenu() {
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
           >
             {resources.map((item) => (
-              <a key={item.label} href={item.href} onClick={() => setOpen(false)}>
+              <a key={item.label} href={linkTo(linkBase, item.href)} onClick={() => setOpen(false)}>
                 <span className="nav-dropdown-title">{item.label}</span>
                 <span className="nav-dropdown-description">{item.description}</span>
               </a>
@@ -78,12 +86,12 @@ function ResourcesMenu() {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ linkBase = "" }) {
   const isMenuOpen = useUiStore((state) => state.isMenuOpen);
   const toggleMenu = useUiStore((state) => state.toggleMenu);
   const closeMenu = useUiStore((state) => state.closeMenu);
   const [scrolled, setScrolled] = useState(false);
-  const appHref = useGetAppLink();
+  const appHref = linkTo(linkBase, useGetAppLink());
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (value) => setScrolled(value > 24));
@@ -115,21 +123,21 @@ export function SiteHeader() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        <a className="nav-brand" href="#top" aria-label="Düdestrap home" onClick={closeMenu}>
+        <a className="nav-brand" href={linkTo(linkBase, "#top")} aria-label="Düdestrap home" onClick={closeMenu}>
           <Wordmark tone="gold" className="nav-wordmark" decorative />
         </a>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navigation.map((item) => (
-            <a key={item.label} href={item.href} className="nav-link">
+            <a key={item.label} href={linkTo(linkBase, item.href)} className="nav-link">
               {item.label}
             </a>
           ))}
-          <ResourcesMenu />
+          <ResourcesMenu linkBase={linkBase} />
         </nav>
 
         <div className="nav-actions">
-          <a href="#vendors" className="nav-text-link">
+          <a href={linkTo(linkBase, "#vendors")} className="nav-text-link">
             For vendors
           </a>
           <Button asChild variant="ink" className="nav-cta">
@@ -150,13 +158,13 @@ export function SiteHeader() {
         <div id="mobile-navigation" className="mobile-menu" data-open={isMenuOpen} aria-hidden={!isMenuOpen}>
           <nav aria-label="Mobile navigation">
             {[...navigation, { label: "For vendors", href: "#vendors" }].map((item) => (
-              <a key={item.label} href={item.href} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
+              <a key={item.label} href={linkTo(linkBase, item.href)} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
                 {item.label}
               </a>
             ))}
             <p className="mobile-menu-group">Resources</p>
             {resources.map((item) => (
-              <a key={item.label} href={item.href} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
+              <a key={item.label} href={linkTo(linkBase, item.href)} onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
                 {item.label}
               </a>
             ))}
