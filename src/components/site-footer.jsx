@@ -1,3 +1,4 @@
+import { BLOG_ENABLED } from "@/blog/config";
 import { Wordmark } from "@/components/wordmark";
 
 const columns = [
@@ -17,16 +18,19 @@ const columns = [
       { label: "Why Dudestrap", href: "#trust" },
       { label: "For vendors", href: "#vendors" },
       { label: "Questions", href: "#resources" },
+      ...(BLOG_ENABLED ? [{ label: "Blog", href: "/blog" }] : []),
     ],
   },
 ];
 
-export function SiteFooter() {
+/** Section links are "#anchors" on the home page; other pages pass linkBase="/". */
+export function SiteFooter({ linkBase = "" }) {
+  const linkTo = (href) => (href.startsWith("#") ? `${linkBase}${href}` : href);
   return (
     <footer className="bg-paper px-5 pt-16 pb-10">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12 md:flex-row md:justify-between">
         <div className="flex max-w-sm flex-col gap-4">
-          <a href="#top" className="w-fit rounded-full bg-brand px-5 py-2.5" aria-label="Düdestrap home">
+          <a href={linkTo("#top")} className="w-fit rounded-full bg-brand px-5 py-2.5" aria-label="Düdestrap home">
             <Wordmark className="w-[132px]" decorative />
           </a>
           <p className="text-[15px] leading-relaxed text-ink/60">
@@ -40,7 +44,7 @@ export function SiteFooter() {
               <ul className="flex flex-col gap-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-[15px] text-ink/60 transition-colors hover:text-ink">
+                    <a href={linkTo(link.href)} className="text-[15px] text-ink/60 transition-colors hover:text-ink">
                       {link.label}
                     </a>
                   </li>

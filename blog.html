@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      Template for every /blog page. scripts/prerender.js writes each page's title, description,
+      canonical, social cards and structured data in place of the marker below, and the page's
+      HTML into #root; this file itself is removed from dist/.
+    -->
+    <!--blog-head-->
+    <meta name="theme-color" content="#FED900" />
+    <meta name="application-name" content="Dudestrap" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- The same motion budget as the home page; see index.html. -->
+    <script>
+      (function () {
+        var lite = true;
+        try {
+          var n = navigator;
+          var c = n.connection || {};
+          lite =
+            matchMedia("(prefers-reduced-motion: reduce)").matches ||
+            c.saveData === true ||
+            /2g$/.test(c.effectiveType || "") ||
+            (n.deviceMemory > 0 && n.deviceMemory < 4) ||
+            (n.hardwareConcurrency > 0 && n.hardwareConcurrency < 4);
+        } catch (e) {}
+        document.documentElement.setAttribute("data-motion", lite ? "lite" : "full");
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/blog/main.jsx"></script>
+  </body>
+</html>
